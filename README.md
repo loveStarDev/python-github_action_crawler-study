@@ -8,6 +8,7 @@
 - Bootstrap
 - python
 - Github Action
+- chart.js
 
 ## Why Github Action?
 개발자 워크 플로우(work flow)를 위한 플랫폼으로 오케스트레이션, 즉 github에서 제공되어지는 컴퓨터 시스템 및 소프트웨어의 자동화를 제공하는 도구입니다. 쉽게 말해 github에서 제공하는 컴퓨터입니다. 2019년에 github에서 CI/CD 기능을 추가하여 Build/Test/Coverage/Release까지 진행할 수 있게 되었습니다.
