@@ -17,3 +17,7 @@ jobs:
         echo "내 이름은 $NAME 입니다."
         echo "내 이름은 $NAME, 내 아이디는 $ID 입니다."
         echo "내 이름은 $NAME, 내 아이디는 $ID 입니다. 제 나이는 $AGE이고, 휴먼 : $HUMAN 입니다."
+    - name: 2. 환경 변수로 출력
+      env:
+        KEY: ${{ secrets.SECRET_KEY }}
+      run: echo "$KEY"
