@@ -1,0 +1,90 @@
+### 1. 리눅스 작업 스케줄러 cron
+
+리눅스 계열의 OS에는 **cron**이라는 작업 스케쥴러가 내장되어 있습니다. cron은 주기적으로 반복되는 일을 자동으로 실행할 수 있도록 해줍니다. 이러한 작업이 가능하게 해주는 파일을 crontab파일이라고 합니다.
+
+### 2. github에 schedule event
+
+github에서는 crontab에 양식에 따라 반복적인 작업을 할 수 있는 기능을 제공하고 있습니다. 아래 몇가지 예제를 첨부합니다. test라는 폴더 아래 [crawling.py](http://crawling.py) 파일을 실행하는 예제입니다.
+
+1. 매 분 실행
+
+    github actions에서는 최소단위로 5분을 사용합니다. 
+
+    ```bash
+    //1분마다 해당하는 명령어를 실행합니다.
+    * * * * * /test/crawling.py
+
+    //5분마다 해당하는 명령어를 실행합니다.
+    */5 * * * * /test/crawling.py
+    ```
+
+2. 여러시간을 정하고 실행
+
+    ```bash
+    //매일 오전 9시 30분, 오후 9시 30분에 해당하는 명령어를 실행합니다.
+    30 9,21 * * * /test/crawling.py
+
+    //매일 매시간 10분, 20분 마다 해당하는 명렁어를 실행합니다.
+    10,20 * * * * /test/crawling.py
+    ```
+
+3. 범위 실행
+
+    ```bash
+    //매일 오전 9시에 해당하는 명령어를 실행합니다. (0 - 일요일, 6 - 토요일)
+    0 9 * * 0-6 /test/crawling.py
+    //월~금 오전 9시에 해당하는 명령어를 실행합니다. (1 - 월요일, 5 - 금요일)
+    0 9 * * 1-5 /test/crawling.py
+    //매일 10시 0분부터 30분까지 해당하는 명령어를 실행합니다.
+    0-30 10 * * * /test/crawling.py
+    ```
+
+crontab 예제는 자사의 무료책 '인공지능을 활용한 업무자동화 With Google Developers Group JEJU'을 참고하였습니다.
+
+```yaml
+*　　　　　　*　　　　　　*　　　　　　*　　　　　　*
+분(0-59)　　시간(0-23)　 일(1-31)　　 월(1-12)　  요일(0-7)
+```
+
+생각보다 어렵죠? 그래서 공식홈페이지에서도 아래와 같이 cron 생성기를 안내하고 있습니다.
+
+[Crontab.guru - The cron schedule expression editor](https://crontab.guru/)
+
+설명이 길지 않아 공식문서도 한 번 읽어보시는 것을 권해드립니다.
+
+[Events that trigger workflows](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#schedule)
+
+main.yml 파일은 아래와 같이 수정합니다.
+
+```yaml
+name: helloGithubAction
+
+on:
+	schedule:
+    - cron: '*/10 * * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: 1. 파일 목록 출력
+      run: ls
+    - name: 2. 설치되어 있는 패키지 확인
+      run: pip list
+    - name: 3. pip 업그래이드
+      run: python -m pip install --upgrade pip
+    - name: 4. 환경 설정
+      run: pip install -r requirements.txt
+    - name: 5. 파이썬 실행
+      run: python test.py
+```
+
+---
+
+- repo마다 20개까지 workflow를 등록할 수 있습니다.
+- job에 단계마다 최대 6시간 사용이 가능합니다.
+- 전체 repo를 통틀어 1시간 최대 1,000번(job)까지만 실행가능합니다.
+- 공개 저장소는 무료이고, 비공개 저장소는 500MB, 2,000분이 넘으면 과금됩니다.
+- UTC 타임존을 사용합니다.
+- 스케줄러의 지연시간이 꽤 깁니다. 10분으로 했을 경우 30분이 넘게 기다려야 하는 경우도 있으며, 사용량이 많아서 지연되는 것으로 보입니다. google에 github actions cron delay로 검색해보시면 다른 repo도 동일한 현상임을 알 수 있습니다.
