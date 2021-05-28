@@ -10,7 +10,7 @@ jobs:
     - name: 1. 변수출력
       env:
         NAME: 'jueun.choi'
-        AGE: 10
+        AGE: 25
         HUMAN: true
         ID: ${{ github.actor }} 
       run: | 
