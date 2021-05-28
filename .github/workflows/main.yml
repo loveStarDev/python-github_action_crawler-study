@@ -35,8 +35,8 @@ jobs:
       run: pip install -r requirements.txt
     - name: 5. 파이썬 실행
       run: |
-        python Crawler/mainDataCrawler.py 
-        python Crawler/fetchDataCrawler.py
+        python crawler/mainDataCrawler.py 
+        python crawler/fetchDataCrawler.py
     - name: Commit files
       run: |
         git config --local user.email "ilutoo@naver.com"
